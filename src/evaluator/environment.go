@@ -3,7 +3,7 @@ package evaluator
 func NewEnvironment() *Environment {
 	s := make(map[string]Object)
 	c := make(map[string]int)
-	n := make(map[string]func(...int64) int64)
+	n := make(map[string]interface{})
 	return &Environment{store: s, CallCounts: c, NativeFunctions: n, outer: nil}
 }
 
@@ -22,7 +22,7 @@ type Environment struct {
 	store           map[string]Object
 	outer           *Environment
 	CallCounts      map[string]int
-	NativeFunctions map[string]func(...int64) int64
+	NativeFunctions map[string]interface{}
 	OnHotFunction   func(fn *Function)
 }
 

@@ -60,6 +60,7 @@ func NewParser(l *Lexer) *Parser {
 	p.registerPrefix(DEF, p.parseFunctionLiteral)
 	p.registerPrefix(MINUS, p.parsePrefixExpression)
 	p.registerPrefix(LPAREN, p.parseGroupedExpression)
+	p.registerPrefix(STRING, p.parseStringLiteral)
 
 	p.infixParseFns = make(map[TokenType]infixParseFn)
 	p.registerInfix(PLUS, p.parseInfixExpression)
@@ -353,4 +354,8 @@ func (p *Parser) parseGroupedExpression() Expression {
 	}
 
 	return exp
+}
+
+func (p *Parser) parseStringLiteral() Expression {
+	return &StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
 }

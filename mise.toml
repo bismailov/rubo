@@ -1,3 +1,6 @@
+[settings]
+env_shell_expand = true
+
 [tools]
 go = "1.25.7"
 rust = "1.93.0"
@@ -5,7 +8,7 @@ ruby = "3.4.8"
 
 [env]
 # This ensures Go can always find your Rust .dylib during development
-DYLD_LIBRARY_PATH = "{{config_root}}/lib:$DYLD_LIBRARY_PATH"
+DYLD_LIBRARY_PATH = "{{config_root}}/lib:${DYLD_LIBRARY_PATH:-}"
 
 [tasks.build-rust]
 description = "Compile Rust runtime to dylib"

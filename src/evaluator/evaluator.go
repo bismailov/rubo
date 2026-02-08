@@ -30,6 +30,9 @@ func Eval(node parser.Node, env *Environment) Object {
 	case *parser.IntegerLiteral:
 		return &Integer{Value: node.Value}
 
+	case *parser.StringLiteral:
+		return &String{Value: node.Value}
+
 	case *parser.InfixExpression:
 		left := Eval(node.Left, env)
 		right := Eval(node.Right, env)
@@ -158,16 +161,29 @@ func applyFunction(fn Object, args []Object) Object {
 	if function.Name != "" {
 		// Step A: Check if a "Native Version" exists
 		if nativeFn, exists := function.Env.NativeFunctions[function.Name]; exists {
-			// Convert args to int64 for the native function (assuming integers for now)
-			var intArgs []int64
-			for _, arg := range args {
-				if integer, ok := arg.(*Integer); ok {
-					intArgs = append(intArgs, integer.Value)
+			switch fn := nativeFn.(type) {
+			case func(...int64) int64:
+				// Convert args to int64 for the native function (assuming integers for now)
+				var intArgs []int64
+				for _, arg := range args {
+					if integer, ok := arg.(*Integer); ok {
+						intArgs = append(intArgs, integer.Value)
+					}
+				}
+				// Step B: If it exists, call it.
+				result := fn(intArgs...)
+				return &Integer{Value: result}
+			case func(string) (int32, error):
+				if len(args) > 0 {
+					if str, ok := args[0].(*String); ok {
+						result, err := fn(str.Value)
+						if err != nil {
+							return &Error{Message: err.Error()}
+						}
+						return &Integer{Value: int64(result)}
+					}
 				}
 			}
-			// Step B: If it exists, call it.
-			result := nativeFn(intArgs...)
-			return &Integer{Value: result}
 		}
 
 		// Profiler logic

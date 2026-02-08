@@ -1,0 +1,8 @@
+def rubo_string_len(s)
+  # This is a placeholder. 
+  # In a real scenario, the orchestrator would see this is hot and replace it.
+  # For this test, we will manually register the native Rust function.
+  0
+end
+
+rubo_string_len("Hello from Rubo!")
