@@ -1,0 +1,19 @@
+# Binaries
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Compiled Rust/Cargo
+target/
+src/runtime/target/
+
+# Go
+vendor/
+*.test
+*.out
+
+# Environment
+.env
+.devcontainer/npx/
