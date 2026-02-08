@@ -1,19 +1,27 @@
-# Binaries
+# Binaries and Shared Libraries
 bin/
-*.exe
-*.dll
-*.so
-*.dylib
+**/*.exe
+**/*.dll
+**/*.so
+**/*.dylib
+/rubo
+/lib/
 
-# Compiled Rust/Cargo
-target/
+# Rust
 src/runtime/target/
+target/
 
 # Go
 vendor/
 *.test
 *.out
 
-# Environment
+# Tools and Local Config
 .env
-.devcontainer/npx/
+.mise.xml
+.jenv/
+.ruby-version
+.python-version
+.node-version
+.tool-versions
+.mise/

@@ -1,0 +1,28 @@
+[tools]
+go = "1.25.7"
+rust = "1.93.0"
+ruby = "3.4.8"
+
+[env]
+# This ensures Go can always find your Rust .dylib during development
+DYLD_LIBRARY_PATH = "{{config_root}}/lib:$DYLD_LIBRARY_PATH"
+
+[tasks.build-rust]
+description = "Compile Rust runtime to dylib"
+run = """
+cd src/runtime && cargo build --release
+mkdir -p ../../lib
+cp target/release/libruntime.dylib ../../lib/
+"""
+
+[tasks.build-go]
+description = "Compile Rubo CLI"
+run = "go build -o rubo ./src/cmd/rubo/main.go"
+
+[tasks.build]
+description = "Build the entire Rubo stack"
+depends = ["build-rust", "build-go"]
+
+[tasks.run]
+description = "Run a Rubo script"
+run = "./rubo {{arg(i=0)}}"

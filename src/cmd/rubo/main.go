@@ -1,7 +1,7 @@
 package main
 
 /*
-#cgo LDFLAGS: -L../../runtime/target/debug -lruntime -lpthread -ldl
+#cgo LDFLAGS: -L../../runtime/target/debug -L../../runtime/target/release -L../../../lib -lruntime -lpthread -ldl
 #include <stdint.h>
 
 int32_t rubo_add(int32_t a, int32_t b);
