@@ -77,3 +77,36 @@ func TestRuboStringBridge(t *testing.T) {
 		t.Errorf("Expected Integer result, got %T (%+v)", result, result)
 	}
 }
+
+func BenchmarkStringBridge(b *testing.B) {
+	// 1. Setup paths
+	cwd, _ := os.Getwd()
+	var runtimePath string
+	if filepath.Base(cwd) == "src" {
+		runtimePath = filepath.Join(cwd, "runtime")
+	} else {
+		runtimePath = filepath.Join(cwd, "src", "runtime")
+	}
+
+	libExt := ".so"
+	if runtime.GOOS == "darwin" {
+		libExt = ".dylib"
+	}
+	libPath := filepath.Join(runtimePath, "target", "release", "libruntime"+libExt)
+
+	// 2. Load Rust function
+	nativeFn, err := bridge.LoadRustStringFunction(libPath, "rubo_string_len")
+	if err != nil {
+		b.Fatalf("Failed to load rust function: %v", err)
+	}
+
+	input := "Hello, World! This is a test string to measure the overhead of the bridge."
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := nativeFn(input)
+		if err != nil {
+			b.Fatalf("Call failed: %v", err)
+		}
+	}
+}

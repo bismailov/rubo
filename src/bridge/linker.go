@@ -21,6 +21,7 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"rubo-lang/internal/arena"
 	"unsafe"
 )
 
@@ -73,9 +74,19 @@ func LoadRustStringFunction(libPath string, funcName string) (func(string) (int3
 		return nil, fmt.Errorf("failed to find symbol: %s", C.GoString(C.dlerror()))
 	}
 
+	// Phase 9: Use Arena for string passing to avoid malloc overhead.
+	// We allocate a 2MB buffer once per function load.
+	// This assumes single-threaded access to the returned function.
+	a := arena.NewArena(2 * 1024 * 1024)
+
 	return func(input string) (int32, error) {
-		cStr := C.CString(input)
-		defer C.free(unsafe.Pointer(cStr))
+		// Reset the arena at the start of the execution cycle (per call)
+		a.Reset()
+
+		// Copy string to arena (no malloc)
+		cStr := (*C.char)(a.Copy(input))
+		// No need to free cStr, it lives in the arena which is reset next time.
+
 		res := int32(C.call_rust_fn_string(symbol, cStr))
 
 		switch res {

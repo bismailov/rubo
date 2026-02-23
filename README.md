@@ -57,3 +57,6 @@ The `mise` environment automatically sets `DYLD_LIBRARY_PATH` so the executable 
 ## Architecture
 
 Rubo combines the developer-friendly syntax of Ruby with the orchestration capabilities of Go and the raw performance of Rust. The Go-based CLI manages the compilation pipeline and uses CGO to interface with the high-performance Rust runtime.
+
+
+https://gemini.google.com/share/b942d07e2d41

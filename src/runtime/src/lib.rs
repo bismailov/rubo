@@ -5,7 +5,13 @@ use std::panic;
 
 #[no_mangle]
 pub extern "C" fn rubo_add(a: i32, b: i32) -> i32 {
-    a + b
+    let result = panic::catch_unwind(|| {
+        a + b
+    });
+    match result {
+        Ok(sum) => sum,
+        Err(_) => -3,
+    }
 }
 
 /* #[no_mangle]
